@@ -23,81 +23,99 @@ class DatabaseSeeder extends Seeder
         // Kui andmebaasis pole filme, lisame ~20 näidis-kirjet,
         // et `Filmid` leht oleks kohe sisuga.
         if (Movie::count() === 0) {
-            $movies = [
-                [
-                    'title' => 'Nebula Drift',
-                    'image' => 'https://picsum.photos/seed/movie-nebula-drift/600/400',
-                    'description' => 'Kosmoselaev navigeerib ohtliku udupiirkonna kaudu, kus gravitatsioon käitub ettearvamatult.',
-                    'director' => 'Marta Kask',
-                    'release_year' => 2019,
-                    'genre' => 'Sci-Fi',
-                    'rating' => 8.4,
-                    'user_id' => $user->id,
-                ],
-                [
-                    'title' => 'Clockwork Heart',
-                    'image' => 'https://picsum.photos/seed/movie-clockwork-heart/600/400',
-                    'description' => 'Romaanne lugu inimesest, kes avastab masinast ehitatud südame salajase loo.',
-                    'director' => 'Rasmus Värav',
-                    'release_year' => 2021,
-                    'genre' => 'Romance',
-                    'rating' => 7.7,
-                    'user_id' => $user->id,
-                ],
-                [
-                    'title' => 'Midnight Courier',
-                    'image' => 'https://picsum.photos/seed/movie-midnight-courier/600/400',
-                    'description' => 'Salajane kuller toimetab pakke, mis avavad iga sihtkoha kohta uue müüdi.',
-                    'director' => 'Liis Rand',
-                    'release_year' => 2020,
-                    'genre' => 'Thriller',
-                    'rating' => 8.1,
-                    'user_id' => $user->id,
-                ],
-              
-            ];
+    $movies = [
+        [
+            'title' => 'Shadow Circuit',
+            'image' => 'https://picsum.photos/seed/movie-shadow-circuit/600/400',
+            'description' => 'Häkker avastab süsteemi, mis ennustab inimeste otsuseid enne, kui nad ise neist teadlikud on.',
+            'director' => 'Karl Tamm',
+            'release_year' => 2022,
+            'genre' => 'Sci-Fi',
+            'rating' => 8.5,
+            'user_id' => $user->id,
+        ],
+        [
+            'title' => 'Frozen Echo',
+            'image' => 'https://picsum.photos/seed/movie-frozen-echo/600/400',
+            'description' => 'Mahajäetud polaarjaamas hakkavad ilmuma helid, mis ei tohiks seal eksisteerida.',
+            'director' => 'Anette Pärn',
+            'release_year' => 2018,
+            'genre' => 'Horror',
+            'rating' => 7.9,
+            'user_id' => $user->id,
+        ],
+        [
+            'title' => 'Golden Horizon',
+            'image' => 'https://picsum.photos/seed/movie-golden-horizon/600/400',
+            'description' => 'Kaks rändurit otsivad legendaarset linna, mis ilmub ainult päikeseloojangu ajal.',
+            'director' => 'Martin Õun',
+            'release_year' => 2021,
+            'genre' => 'Adventure',
+            'rating' => 8.2,
+            'user_id' => $user->id,
+        ],
+        [
+            'title' => 'Broken Signals',
+            'image' => 'https://picsum.photos/seed/movie-broken-signals/600/400',
+            'description' => 'Raadiolained toovad sõnumeid tulevikust, kuid iga sõnum muudab olevikku ohtlikult.',
+            'director' => 'Laura Kivi',
+            'release_year' => 2020,
+            'genre' => 'Thriller',
+            'rating' => 8.0,
+            'user_id' => $user->id,
+        ],
+        [
+            'title' => 'Velvet Night',
+            'image' => 'https://picsum.photos/seed/movie-velvet-night/600/400',
+            'description' => 'Öine linn peidab saladust, kus iga kohtumine võib muuta inimese elu igaveseks.',
+            'director' => 'Rene Vaher',
+            'release_year' => 2017,
+            'genre' => 'Drama',
+            'rating' => 7.6,
+            'user_id' => $user->id,
+        ],
+    ];
 
-            foreach ($movies as $movie) {
-                Movie::create($movie);
-            }
-        }
+    foreach ($movies as $movie) {
+        Movie::create($movie);
+    }
+}
 
         // Kui andmebaasis pole blogipostitusi, lisame mõned näited,
         // et `Blogi` leht poleks tühi.
         if (Post::count() === 0) {
-            $posts = [
-              
-                [
-                    'title' => 'Kas Sci-Fi peab olema tehniline?',
-                    'description' => 'Ei pea. Sci‑Fi võib olla ka emotsioon: kuidas inimesed reageerivad uuele maailmale, mida nad kohe ei mõista.',
-                    'user_id' => $user->id,
-                ],
-                [
-                    'title' => 'Koomia näitab, kas teed õigeid asju',
-                    'description' => 'Naer tuleb tihti siis, kui tegelased teevad midagi “liiga tõsiselt”—ja sina saad lõpuks aru, et see oli just õige lähenemine.',
-                    'user_id' => $user->id,
-                ],
-                [
-                    'title' => 'Hirm ja valgus',
-                    'description' => '“Glass Fortress” näitab, kuidas hirm võib peituda rahulikus raamis. Mõnikord on parim efekt see, mis ei plahvata kohe.',
-                    'user_id' => $user->id,
-                ],
-                [
-                    'title' => 'Mis on hea kirjeldus?',
-                    'description' => 'Kirjeldus peaks tekitama pildi: kelle lugu see on, mis olukorras nad on ja miks see on oluline. Üks lõik on tihti piisav.',
-                    'user_id' => $user->id,
-                ],
-                [
-                    'title' => 'Minu “Tide of Tomorrow” lemmikhetk',
-                    'description' => 'Kõige rohkem meeldib mulle, kuidas lugu ei kiirusta. Mõned asjad saavad päriselt kokku alles siis, kui ootad.',
-                    'user_id' => $user->id,
-                ],
-            ];
+    $posts = [
+        [
+            'title' => 'Kuidas alustada programmeerimisega?',
+            'description' => 'Alusta väikestest sammudest: õpi üks keel selgeks ja tee lihtsaid projekte. Praktika on olulisem kui teooria.',
+            'user_id' => $user->id,
+        ],
+        [
+            'title' => 'Miks vead on kasulikud?',
+            'description' => 'Iga error õpetab midagi uut. Kui midagi ei tööta, saad paremini aru, kuidas süsteem tegelikult toimib.',
+            'user_id' => $user->id,
+        ],
+        [
+            'title' => 'Hea disaini põhitõed',
+            'description' => 'Lihtsus ja loetavus on kõige tähtsamad. Kasutaja peab aru saama, mida teha, ilma mõtlemata.',
+            'user_id' => $user->id,
+        ],
+        [
+            'title' => 'Kuidas jääda motiveerituks?',
+            'description' => 'Sea endale väikesed eesmärgid ja tähista nende saavutamist. See hoiab motivatsiooni üleval.',
+            'user_id' => $user->id,
+        ],
+        [
+            'title' => 'Frontend vs Backend',
+            'description' => 'Frontend tegeleb sellega, mida kasutaja näeb. Backend hoolitseb loogika ja andmete eest.',
+            'user_id' => $user->id,
+        ],
+    ];
 
-            foreach ($posts as $post) {
-                Post::create($post);
-            }
-        }
+    foreach ($posts as $post) {
+        Post::create($post);
+    }
+}
 
        $products = [
             ['name' => 'Juhtmevaba laadimisalus', 'description' => 'Kiirlaadimise toega juhtmevaba laadija, sobib kõigile Qi-seadmetele.', 'price' => 24.99, 'image' => 'https://picsum.photos/seed/wirelesscharger/400/400'],

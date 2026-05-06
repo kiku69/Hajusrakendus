@@ -24,7 +24,7 @@ defineProps({ posts: Array });
                             style="background:rgba(255,200,90,0.12); border:1px solid rgba(255,200,90,0.3); color:#ffc85a; padding:7px 16px; border-radius:8px; font-size:0.8rem; letter-spacing:0.05em; text-decoration:none;"
                             onmouseover="this.style.background='rgba(255,200,90,0.22)'"
                             onmouseout="this.style.background='rgba(255,200,90,0.12)'">
-                            + Uus postitus
+                            Uus postitus
                         </Link>
                     </div>
                 </div>
@@ -32,7 +32,7 @@ defineProps({ posts: Array });
         </nav>
 
         <div class="max-w-4xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
-            <h1 style="font-family:'Georgia',serif; font-size:2rem; color:#e2ddd5; margin-bottom:2rem;">Blogi</h1>
+            
 
             <div v-if="posts.length === 0" style="text-align:center; padding:5rem 0; color:#4a4640;">
                 <p style="font-size:1.1rem;">Postitusi pole veel.</p>

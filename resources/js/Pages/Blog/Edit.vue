@@ -25,7 +25,7 @@ function submit() { form.put(route('blog.update', props.post.id)); }
             <Link :href="route('blog.show', post.id)"
                 style="color:#6b6358; font-size:0.8rem; text-decoration:none; letter-spacing:0.08em; display:inline-block; margin-bottom:2rem;"
                 onmouseover="this.style.color='#ffc85a'" onmouseout="this.style.color='#6b6358'">
-                ← Tagasi postituse juurde
+                Tagasi
             </Link>
 
             <div style="background:#16161f; border:1px solid rgba(255,200,90,0.1); border-radius:14px; padding:2rem;">
@@ -52,7 +52,7 @@ function submit() { form.put(route('blog.update', props.post.id)); }
                         style="background:rgba(255,200,90,0.15); border:1px solid rgba(255,200,90,0.3); color:#ffc85a; padding:11px 24px; border-radius:8px; font-size:0.85rem; letter-spacing:0.08em; cursor:pointer; align-self:flex-start;"
                         onmouseover="this.style.background='rgba(255,200,90,0.25)'"
                         onmouseout="this.style.background='rgba(255,200,90,0.15)'">
-                        Salvesta muudatused
+                        Salvesta
                     </button>
                 </form>
             </div>

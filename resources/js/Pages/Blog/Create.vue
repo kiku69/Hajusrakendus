@@ -24,7 +24,7 @@ function submit() { form.post(route('blog.store')); }
             <Link :href="route('blog.index')"
                 style="color:#6b6358; font-size:0.8rem; text-decoration:none; letter-spacing:0.08em; display:inline-block; margin-bottom:2rem;"
                 onmouseover="this.style.color='#ffc85a'" onmouseout="this.style.color='#6b6358'">
-                ← Tagasi blogisse
+                Tagasi
             </Link>
 
             <div style="background:#16161f; border:1px solid rgba(255,200,90,0.1); border-radius:14px; padding:2rem;">

@@ -19,7 +19,7 @@ const showingNavigationDropdown = ref(false);
                         <div class="flex">
                             <div class="shrink-0 flex items-center">
                                 <Link :href="route('dashboard')" class="flex items-center gap-2">
-                                    <span style="font-family:'Georgia',serif; font-size:1rem; font-weight:700; letter-spacing:0.08em; color:#ffc85a;">HAJUSRAKENDUSED</span>
+                                    <span style="font-family:'Georgia',serif; font-size:1rem; font-weight:700; letter-spacing:0.08em; color:#ffc85a;">HAJUS</span>
                                    
                                 </Link>
                             </div>

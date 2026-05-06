@@ -171,10 +171,7 @@ function cancelForm() {
         </nav>
 
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between mb-6">
-                <h1 class="text-3xl font-bold text-gray-800">Kaardirakendus</h1>
-                <p class="text-gray-500 text-sm">Klõpsa kaardil, et lisada uus marker</p>
-            </div>
+           
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Map -->

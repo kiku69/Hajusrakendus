@@ -34,7 +34,7 @@ function removeItem(productId) {
             <Link :href="route('shop.index')"
                 style="color:#6b6358; font-size:0.8rem; text-decoration:none; letter-spacing:0.08em; display:inline-block; margin-bottom:2rem;"
                 onmouseover="this.style.color='#ffc85a'" onmouseout="this.style.color='#6b6358'">
-                ← Tagasi poodi
+                Tagasi
             </Link>
 
             <h1 style="font-family:'Georgia',serif; font-size:2rem; color:#e2ddd5; margin-bottom:2rem;">Ostukorv</h1>
@@ -45,7 +45,7 @@ function removeItem(productId) {
                 </svg>
                 <p style="font-size:1rem;">Ostukorv on tühi.</p>
                 <Link :href="route('shop.index')" style="color:#ffc85a; text-decoration:none; font-size:0.85rem; display:inline-block; margin-top:12px;">
-                    Mine poodi →
+                    Mine poodi 
                 </Link>
             </div>
 
@@ -88,7 +88,7 @@ function removeItem(productId) {
                         style="display:block; width:100%; margin-top:1rem; background:rgba(255,200,90,0.15); border:1px solid rgba(255,200,90,0.3); color:#ffc85a; padding:12px; border-radius:8px; text-align:center; font-size:0.85rem; letter-spacing:0.08em; text-decoration:none; transition:all 0.2s; box-sizing:border-box;"
                         onmouseover="this.style.background='rgba(255,200,90,0.25)'"
                         onmouseout="this.style.background='rgba(255,200,90,0.15)'">
-                        Osta kätte →
+                        Osta
                     </Link>
                 </div>
             </div>

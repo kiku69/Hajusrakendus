@@ -96,7 +96,7 @@ function getImageSrc(movie) {
                             style="background:rgba(255,200,90,0.12); border:1px solid rgba(255,200,90,0.3); color:#ffc85a; padding:7px 16px; border-radius:8px; font-size:0.8rem; letter-spacing:0.05em; text-decoration:none; transition:all 0.2s;"
                             onmouseover="this.style.background='rgba(255,200,90,0.22)'"
                             onmouseout="this.style.background='rgba(255,200,90,0.12)'">
-                            + Lisa uus
+                            Lisa uus
                         </Link>
                     </div>
                 </div>
@@ -105,13 +105,12 @@ function getImageSrc(movie) {
 
         <div class="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between mb-8">
-                <h1 style="font-family:'Georgia',serif; font-size:2rem; font-weight:700; color:#e2ddd5; letter-spacing:0.02em;">Filmid</h1>
-                <a href="/api/movies" target="_blank" style="font-size:0.75rem; color:#6b6358; letter-spacing:0.1em; text-decoration:none;" onmouseover="this.style.color='#ffc85a'" onmouseout="this.style.color='#6b6358'">API →</a>
+                
             </div>
 
             <!-- Source Switcher -->
             <div class="flex items-center gap-4 mb-6">
-                <span style="font-size:0.75rem; color:#6b6358; letter-spacing:0.12em; text-transform:uppercase;">Allikas</span>
+                
                 <div style="display:flex; border:1px solid rgba(255,200,90,0.15); border-radius:8px; overflow:hidden;">
                     <button @click="switchSource('mine')"
                         :style="activeSource === 'mine'
@@ -126,11 +125,7 @@ function getImageSrc(movie) {
                         API andmed
                     </button>
                 </div>
-                <a :href="activeSource === 'mine' ? '/api/movies' : FRIEND_API" target="_blank"
-                    style="font-size:0.7rem; color:#4a4640; text-decoration:none; letter-spacing:0.03em;"
-                    onmouseover="this.style.color='#6b6358'" onmouseout="this.style.color='#4a4640'">
-                    {{ activeSource === 'mine' ? '/api/movies' : FRIEND_API }}
-                </a>
+              
             </div>
 
             <!-- Filters -->
@@ -253,7 +248,7 @@ function getImageSrc(movie) {
                             </button>
                         </div>
                         <div v-if="activeSource === 'friend'" style="margin-top:12px; padding-top:12px; border-top:1px solid rgba(255,200,90,0.08);">
-                            <span style="font-size:0.7rem; color:#4a4640;">👤 Allikas: sõbra API</span>
+                            <span style="font-size:0.7rem; color:#4a4640;"></span>
                         </div>
                     </div>
                 </div>

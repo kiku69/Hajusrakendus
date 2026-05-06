@@ -47,7 +47,7 @@ function deletePost() {
             <Link :href="route('blog.index')"
                 style="color:#6b6358; font-size:0.8rem; text-decoration:none; letter-spacing:0.08em; display:inline-block; margin-bottom:2rem;"
                 onmouseover="this.style.color='#ffc85a'" onmouseout="this.style.color='#6b6358'">
-                ← Tagasi blogisse
+                Tagasi
             </Link>
 
             <!-- Post -->
@@ -123,7 +123,7 @@ function deletePost() {
                 </div>
 
                 <div v-if="!post.comments?.length" style="text-align:center; color:#3a3a40; font-size:0.85rem; padding:2rem 0;">
-                    Kommentaare pole veel.
+                    Kommentaare pole.
                 </div>
             </div>
         </div>
