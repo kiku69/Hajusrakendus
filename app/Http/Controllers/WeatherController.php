@@ -29,6 +29,8 @@ class WeatherController extends Controller
                         'lang' => 'et',
                     ]);
 
+                    
+
                     if ($response->successful()) {
                         return $response->json();
                     }

@@ -2,9 +2,7 @@
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref, onMounted, watch } from 'vue';
 
-const props = defineProps({
-    markers: Array,
-});
+const props = defineProps({ markers: Array });
 
 const showForm = ref(false);
 const editingMarker = ref(null);
@@ -28,35 +26,24 @@ onMounted(async () => {
 
     const script = document.createElement('script');
     script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-    script.onload = () => {
-        initMap();
-    };
+    script.onload = () => { initMap(); };
     document.head.appendChild(script);
 });
 
 watch(() => props.markers, (newMarkers) => {
     if (!map) return;
-    leafletMarkers.forEach(({ leafletMarker }) => {
-        map.removeLayer(leafletMarker);
-    });
+    leafletMarkers.forEach(({ leafletMarker }) => map.removeLayer(leafletMarker));
     leafletMarkers = [];
-    newMarkers.forEach(marker => {
-        addLeafletMarker(marker);
-    });
+    newMarkers.forEach(marker => addLeafletMarker(marker));
 }, { deep: true });
 
 function initMap() {
     map = L.map(mapContainer.value).setView([59.437, 24.7536], 7);
-
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        attribution: '&copy; OpenStreetMap',
         maxZoom: 19,
     }).addTo(map);
-
-    props.markers.forEach(marker => {
-        addLeafletMarker(marker);
-    });
-
+    props.markers.forEach(marker => addLeafletMarker(marker));
     map.on('click', function (e) {
         form.latitude = parseFloat(e.latlng.lat.toFixed(7));
         form.longitude = parseFloat(e.latlng.lng.toFixed(7));
@@ -64,30 +51,16 @@ function initMap() {
         form.name = '';
         form.description = '';
         showForm.value = true;
-
-        if (tempMarker) {
-            map.removeLayer(tempMarker);
-        }
-        tempMarker = L.marker([e.latlng.lat, e.latlng.lng], {
-            icon: L.icon({
-                iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-                iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-                shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
-            }),
-            opacity: 0.6,
-        }).addTo(map);
+        if (tempMarker) map.removeLayer(tempMarker);
+        tempMarker = L.marker([e.latlng.lat, e.latlng.lng], { opacity: 0.6 }).addTo(map);
     });
 }
 
 function addLeafletMarker(marker) {
     const lm = L.marker([marker.latitude, marker.longitude]).addTo(map);
-    lm.bindPopup(`
-        <strong>${escapeHtml(marker.name)}</strong><br/>
+    lm.bindPopup(`<strong>${escapeHtml(marker.name)}</strong><br/>
         ${marker.description ? escapeHtml(marker.description) + '<br/>' : ''}
-        <small>Lat: ${marker.latitude}, Lng: ${marker.longitude}</small>
-    `);
+        <small style="color:#888;">Lat: ${marker.latitude}, Lng: ${marker.longitude}</small>`);
     leafletMarkers.push({ id: marker.id, leafletMarker: lm });
 }
 
@@ -109,26 +82,11 @@ function editMarker(marker) {
 function submitForm() {
     if (editingMarker.value) {
         form.put(route('markers.update', editingMarker.value.id), {
-            onSuccess: () => {
-                showForm.value = false;
-                editingMarker.value = null;
-                form.reset();
-                if (tempMarker) {
-                    map.removeLayer(tempMarker);
-                    tempMarker = null;
-                }
-            },
+            onSuccess: () => { showForm.value = false; editingMarker.value = null; form.reset(); if (tempMarker) { map.removeLayer(tempMarker); tempMarker = null; } },
         });
     } else {
         form.post(route('markers.store'), {
-            onSuccess: () => {
-                showForm.value = false;
-                form.reset();
-                if (tempMarker) {
-                    map.removeLayer(tempMarker);
-                    tempMarker = null;
-                }
-            },
+            onSuccess: () => { showForm.value = false; form.reset(); if (tempMarker) { map.removeLayer(tempMarker); tempMarker = null; } },
         });
     }
 }
@@ -143,110 +101,125 @@ function cancelForm() {
     showForm.value = false;
     editingMarker.value = null;
     form.reset();
-    if (tempMarker) {
-        map.removeLayer(tempMarker);
-        tempMarker = null;
-    }
+    if (tempMarker) { map.removeLayer(tempMarker); tempMarker = null; }
 }
 </script>
 
 <template>
     <Head title="Kaart" />
 
-    <div class="min-h-screen bg-gray-100">
-        <!-- Nav -->
-        <nav class="bg-white border-b border-gray-200">
+    <div class="min-h-screen" style="background:#0d0d12; color:#e2ddd5;">
+        <nav style="background:rgba(13,13,18,0.97); border-bottom:1px solid rgba(255,200,90,0.12); position:sticky; top:0; z-index:50; backdrop-filter:blur(16px);">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16 items-center">
-                    <div class="flex items-center space-x-8">
-                        <a :href="route('dashboard')" class="text-gray-800 font-bold text-lg">Hajusrakendused</a>
-                        <a :href="route('weather.index')" class="text-gray-500 hover:text-gray-700">Ilm</a>
-                        <a :href="route('map.index')" class="text-gray-900 font-medium">Kaart</a>
-                        <a :href="route('blog.index')" class="text-gray-500 hover:text-gray-700">Blogi</a>
-                        <a :href="route('shop.index')" class="text-gray-500 hover:text-gray-700">Pood</a>
-                        <a :href="route('movies.index')" class="text-gray-500 hover:text-gray-700">Filmid</a>
+                    <div class="flex items-center space-x-6">
+                        <a :href="route('dashboard')" style="font-family:'Georgia',serif; font-size:0.95rem; font-weight:700; letter-spacing:0.08em; color:#ffc85a; text-decoration:none;">HAJUS</a>
+                        <a :href="route('weather.index')" style="color:#6b6358; font-size:0.85rem; text-decoration:none;" onmouseover="this.style.color='#c8b896'" onmouseout="this.style.color='#6b6358'">Ilm</a>
+                        <a :href="route('map.index')" style="color:#ffc85a; font-size:0.85rem; text-decoration:none; border-bottom:1px solid rgba(255,200,90,0.4); padding-bottom:1px;">Kaart</a>
+                        <a :href="route('blog.index')" style="color:#6b6358; font-size:0.85rem; text-decoration:none;" onmouseover="this.style.color='#c8b896'" onmouseout="this.style.color='#6b6358'">Blogi</a>
+                        <a :href="route('shop.index')" style="color:#6b6358; font-size:0.85rem; text-decoration:none;" onmouseover="this.style.color='#c8b896'" onmouseout="this.style.color='#6b6358'">Pood</a>
+                        <a :href="route('movies.index')" style="color:#6b6358; font-size:0.85rem; text-decoration:none;" onmouseover="this.style.color='#c8b896'" onmouseout="this.style.color='#6b6358'">Filmid</a>
                     </div>
+                    <p style="font-size:0.75rem; color:#4a4640; letter-spacing:0.06em;">Klõpsa kaardil markeri lisamiseks</p>
                 </div>
             </div>
         </nav>
 
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-           
+            <h1 style="font-family:'Georgia',serif; font-size:1.75rem; color:#e2ddd5; margin-bottom:1.25rem;">Kaardirakendus</h1>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
                 <!-- Map -->
                 <div class="lg:col-span-2">
-                    <div ref="mapContainer" class="w-full h-[600px] rounded-xl shadow-lg border border-gray-200 z-0"></div>
+                    <div ref="mapContainer"
+                        style="width:100%; height:600px; border-radius:12px; border:1px solid rgba(255,200,90,0.1); overflow:hidden; z-index:0;"></div>
                 </div>
 
                 <!-- Sidebar -->
-                <div class="space-y-4">
-                    <!-- Add/Edit Form -->
-                    <div v-if="showForm" class="bg-white rounded-xl shadow p-6">
-                        <h3 class="text-lg font-semibold mb-4">
+                <div style="display:flex; flex-direction:column; gap:1rem;">
+                    <!-- Add/Edit form -->
+                    <div v-if="showForm" style="background:#16161f; border:1px solid rgba(255,200,90,0.15); border-radius:12px; padding:1.5rem;">
+                        <h3 style="font-size:0.95rem; font-weight:600; color:#c8b896; margin-bottom:1.25rem;">
                             {{ editingMarker ? 'Muuda markerit' : 'Lisa uus marker' }}
                         </h3>
-                        <form @submit.prevent="submitForm" class="space-y-4">
+                        <form @submit.prevent="submitForm" style="display:flex; flex-direction:column; gap:0.9rem;">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Nimi</label>
+                                <label style="display:block; font-size:0.72rem; color:#6b6358; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:5px;">Nimi</label>
                                 <input v-model="form.name" type="text" required
-                                    class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
-                                <div v-if="form.errors.name" class="text-red-500 text-sm mt-1">{{ form.errors.name }}</div>
+                                    style="width:100%; background:#0d0d12; border:1px solid rgba(255,200,90,0.15); border-radius:8px; padding:9px 12px; color:#e2ddd5; font-size:0.85rem; outline:none; box-sizing:border-box;"
+                                    onfocus="this.style.borderColor='rgba(255,200,90,0.4)'"
+                                    onblur="this.style.borderColor='rgba(255,200,90,0.15)'" />
+                                <div v-if="form.errors.name" style="color:#b04040; font-size:0.75rem; margin-top:3px;">{{ form.errors.name }}</div>
                             </div>
                             <div class="grid grid-cols-2 gap-3">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Laiuskraad</label>
+                                    <label style="display:block; font-size:0.72rem; color:#6b6358; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:5px;">Lat</label>
                                     <input v-model="form.latitude" type="number" step="any" required
-                                        class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
+                                        style="width:100%; background:#0d0d12; border:1px solid rgba(255,200,90,0.15); border-radius:8px; padding:9px 12px; color:#e2ddd5; font-size:0.82rem; outline:none; box-sizing:border-box;"
+                                        onfocus="this.style.borderColor='rgba(255,200,90,0.4)'"
+                                        onblur="this.style.borderColor='rgba(255,200,90,0.15)'" />
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Pikkuskraad</label>
+                                    <label style="display:block; font-size:0.72rem; color:#6b6358; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:5px;">Lng</label>
                                     <input v-model="form.longitude" type="number" step="any" required
-                                        class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
+                                        style="width:100%; background:#0d0d12; border:1px solid rgba(255,200,90,0.15); border-radius:8px; padding:9px 12px; color:#e2ddd5; font-size:0.82rem; outline:none; box-sizing:border-box;"
+                                        onfocus="this.style.borderColor='rgba(255,200,90,0.4)'"
+                                        onblur="this.style.borderColor='rgba(255,200,90,0.15)'" />
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Kirjeldus</label>
+                                <label style="display:block; font-size:0.72rem; color:#6b6358; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:5px;">Kirjeldus</label>
                                 <textarea v-model="form.description" rows="3"
-                                    class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                                    style="width:100%; background:#0d0d12; border:1px solid rgba(255,200,90,0.15); border-radius:8px; padding:9px 12px; color:#e2ddd5; font-size:0.85rem; outline:none; resize:vertical; box-sizing:border-box;"
+                                    onfocus="this.style.borderColor='rgba(255,200,90,0.4)'"
+                                    onblur="this.style.borderColor='rgba(255,200,90,0.15)'"></textarea>
                             </div>
-                            <div class="flex space-x-3">
+                            <div style="display:flex; gap:8px;">
                                 <button type="submit" :disabled="form.processing"
-                                    class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 rounded-lg transition">
+                                    style="flex:1; background:rgba(255,200,90,0.15); border:1px solid rgba(255,200,90,0.3); color:#ffc85a; padding:9px; border-radius:8px; font-size:0.82rem; cursor:pointer; letter-spacing:0.04em;"
+                                    onmouseover="this.style.background='rgba(255,200,90,0.25)'"
+                                    onmouseout="this.style.background='rgba(255,200,90,0.15)'">
                                     {{ editingMarker ? 'Salvesta' : 'Lisa' }}
                                 </button>
                                 <button type="button" @click="cancelForm"
-                                    class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 rounded-lg transition">
+                                    style="flex:1; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); color:#8a8070; padding:9px; border-radius:8px; font-size:0.82rem; cursor:pointer;"
+                                    onmouseover="this.style.background='rgba(255,255,255,0.08)'"
+                                    onmouseout="this.style.background='rgba(255,255,255,0.04)'">
                                     Tühista
                                 </button>
                             </div>
                         </form>
                     </div>
 
-                    <!-- Markers List -->
-                    <div class="bg-white rounded-xl shadow p-6">
-                        <h3 class="text-lg font-semibold mb-4">Markerid ({{ markers.length }})</h3>
-                        <div v-if="markers.length === 0" class="text-gray-400 text-center py-4">
-                            Markereid pole lisatud.
+                    <!-- Markers list -->
+                    <div style="background:#16161f; border:1px solid rgba(255,200,90,0.1); border-radius:12px; padding:1.5rem; flex:1;">
+                        <h3 style="font-size:0.95rem; font-weight:600; color:#c8b896; margin-bottom:1rem;">
+                            Markerid <span style="color:#4a4640; font-weight:400;">({{ markers.length }})</span>
+                        </h3>
+
+                        <div v-if="markers.length === 0" style="text-align:center; color:#3a3a40; padding:2rem 0; font-size:0.85rem;">
+                            Markereid pole lisatud.<br/>
+                            <span style="font-size:0.78rem; color:#2a2a30;">Klõpsa kaardil alustamiseks.</span>
                         </div>
-                        <div class="space-y-3 max-h-96 overflow-y-auto">
+
+                        <div style="display:flex; flex-direction:column; gap:0.6rem; max-height:430px; overflow-y:auto;">
                             <div v-for="marker in markers" :key="marker.id"
-                                class="border border-gray-100 rounded-lg p-3 hover:bg-gray-50 transition">
-                                <div class="flex justify-between items-start">
-                                    <div>
-                                        <p class="font-semibold text-gray-800">{{ marker.name }}</p>
-                                        <p v-if="marker.description" class="text-gray-500 text-sm mt-1">{{ marker.description }}</p>
-                                        <p class="text-gray-400 text-xs mt-1">{{ marker.latitude }}, {{ marker.longitude }}</p>
+                                style="background:rgba(255,200,90,0.03); border:1px solid rgba(255,200,90,0.07); border-radius:8px; padding:0.9rem; transition:all 0.2s;"
+                                onmouseover="this.style.borderColor='rgba(255,200,90,0.18)'"
+                                onmouseout="this.style.borderColor='rgba(255,200,90,0.07)'">
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
+                                    <div style="flex:1; min-width:0;">
+                                        <p style="font-size:0.88rem; font-weight:600; color:#e2ddd5; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ marker.name }}</p>
+                                        <p v-if="marker.description" style="font-size:0.78rem; color:#5a5650; margin-top:3px; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">{{ marker.description }}</p>
+                                        <p style="font-size:0.7rem; color:#3a3a40; margin-top:4px; font-family:monospace;">{{ marker.latitude }}, {{ marker.longitude }}</p>
                                     </div>
-                                    <div class="flex space-x-1 ml-2">
+                                    <div style="display:flex; flex-direction:column; gap:4px; flex-shrink:0;">
                                         <button @click="editMarker(marker)"
-                                            class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">
-                                            Muuda
-                                        </button>
+                                            style="font-size:0.72rem; color:#6b6358; background:none; border:none; cursor:pointer; padding:0; text-align:right; letter-spacing:0.04em;"
+                                            onmouseover="this.style.color='#ffc85a'" onmouseout="this.style.color='#6b6358'">Muuda</button>
                                         <button @click="deleteMarker(marker)"
-                                            class="text-red-600 hover:text-red-800 text-sm font-medium">
-                                            Kustuta
-                                        </button>
+                                            style="font-size:0.72rem; color:#6b6358; background:none; border:none; cursor:pointer; padding:0; text-align:right; letter-spacing:0.04em;"
+                                            onmouseover="this.style.color='#c05050'" onmouseout="this.style.color='#6b6358'">Kustuta</button>
                                     </div>
                                 </div>
                             </div>

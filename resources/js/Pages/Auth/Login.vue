@@ -2,93 +2,73 @@
 import Checkbox from '@/Components/Checkbox.vue';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 
-defineProps({
-    canResetPassword: {
-        type: Boolean,
-    },
-    status: {
-        type: String,
-    },
-});
+defineProps({ canResetPassword: Boolean, status: String });
 
-const form = useForm({
-    email: '',
-    password: '',
-    remember: false,
-});
+const form = useForm({ email: '', password: '', remember: false });
 
 const submit = () => {
-    form.post(route('login'), {
-        onFinish: () => form.reset('password'),
-    });
+    form.post(route('login'), { onFinish: () => form.reset('password') });
 };
 </script>
 
 <template>
     <GuestLayout>
-        <Head title="Log in" />
+        <Head title="Logi sisse" />
 
-        <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
+        <h1 style="font-family:'Georgia',serif; font-size:1.4rem; color:#e2ddd5; margin-bottom:1.75rem; text-align:center; letter-spacing:0.02em;">Logi sisse</h1>
+
+        <div v-if="status" style="background:rgba(80,180,90,0.1); border:1px solid rgba(80,180,90,0.25); color:#5ab86a; border-radius:8px; padding:10px 14px; font-size:0.82rem; margin-bottom:1.25rem;">
             {{ status }}
         </div>
 
-        <form @submit.prevent="submit">
+        <form @submit.prevent="submit" style="display:flex; flex-direction:column; gap:1.1rem;">
             <div>
-                <InputLabel for="email" value="Email" />
-
-                <TextInput
-                    id="email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    v-model="form.email"
-                    required
-                    autofocus
-                    autocomplete="username"
-                />
-
-                <InputError class="mt-2" :message="form.errors.email" />
+                <label style="display:block; font-size:0.72rem; color:#6b6358; letter-spacing:0.14em; text-transform:uppercase; margin-bottom:6px;">E-post</label>
+                <input id="email" type="email" v-model="form.email" required autofocus autocomplete="username"
+                    style="width:100%; background:#0d0d12; border:1px solid rgba(255,200,90,0.15); border-radius:8px; padding:10px 14px; color:#e2ddd5; font-size:0.9rem; outline:none; box-sizing:border-box;"
+                    onfocus="this.style.borderColor='rgba(255,200,90,0.4)'"
+                    onblur="this.style.borderColor='rgba(255,200,90,0.15)'" />
+                <InputError class="mt-1" :message="form.errors.email" />
             </div>
 
-            <div class="mt-4">
-                <InputLabel for="password" value="Password" />
-
-                <TextInput
-                    id="password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password"
-                    required
-                    autocomplete="current-password"
-                />
-
-                <InputError class="mt-2" :message="form.errors.password" />
+            <div>
+                <label style="display:block; font-size:0.72rem; color:#6b6358; letter-spacing:0.14em; text-transform:uppercase; margin-bottom:6px;">Parool</label>
+                <input id="password" type="password" v-model="form.password" required autocomplete="current-password"
+                    style="width:100%; background:#0d0d12; border:1px solid rgba(255,200,90,0.15); border-radius:8px; padding:10px 14px; color:#e2ddd5; font-size:0.9rem; outline:none; box-sizing:border-box;"
+                    onfocus="this.style.borderColor='rgba(255,200,90,0.4)'"
+                    onblur="this.style.borderColor='rgba(255,200,90,0.15)'" />
+                <InputError class="mt-1" :message="form.errors.password" />
             </div>
 
-            <div class="block mt-4">
-                <label class="flex items-center">
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+                <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
                     <Checkbox name="remember" v-model:checked="form.remember" />
-                    <span class="ms-2 text-sm text-gray-600">Remember me</span>
+                    <span style="font-size:0.82rem; color:#6b6358;">Jäta mind meelde</span>
                 </label>
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
-                <Link
-                    v-if="canResetPassword"
-                    :href="route('password.request')"
-                    class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                    Forgot your password?
+                <Link v-if="canResetPassword" :href="route('password.request')"
+                    style="font-size:0.8rem; color:#6b6358; text-decoration:none; letter-spacing:0.03em;"
+                    onmouseover="this.style.color='#ffc85a'" onmouseout="this.style.color='#6b6358'">
+                    Unustasid parooli?
                 </Link>
-
-                <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Log in
-                </PrimaryButton>
             </div>
+
+            <button type="submit" :disabled="form.processing"
+                style="background:rgba(255,200,90,0.15); border:1px solid rgba(255,200,90,0.3); color:#ffc85a; padding:11px; border-radius:8px; font-size:0.85rem; letter-spacing:0.08em; cursor:pointer; transition:all 0.2s; margin-top:0.25rem;"
+                onmouseover="this.style.background='rgba(255,200,90,0.25)'"
+                onmouseout="this.style.background='rgba(255,200,90,0.15)'">
+                Logi sisse
+            </button>
         </form>
+
+        <p style="text-align:center; margin-top:1.5rem; font-size:0.82rem; color:#4a4640;">
+            Pole kontot?
+            <Link :href="route('register')"
+                style="color:#ffc85a; text-decoration:none; margin-left:4px;"
+                onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">
+                Registreeru
+            </Link>
+        </p>
     </GuestLayout>
 </template>
