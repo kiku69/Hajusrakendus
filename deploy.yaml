@@ -1,0 +1,50 @@
+import:
+  - recipe/laravel.php
+ 
+config:
+  application: RalfiHarjutus
+  repository: git@github.com:kiku69/Hajusrakendus.git
+  branch: main
+  http_user: virt124164
+  http_group: virt124164
+  writable_mode: chmod
+  shared_files:
+    - .env
+  shared_dirs:
+    - storage
+  writable_dirs:
+    - bootstrap/cache
+    - storage
+    - storage/app
+    - storage/app/public
+    - storage/framework
+    - storage/logs
+  keep_releases: 3
+ 
+hosts:
+  stage:
+    hostname: tak23mere.itmajakas.ee
+    remote_user: virt124164
+    deploy_path: ~/domeenid/www.tak23mere.itmajakas.ee/ralfiharjutus
+ 
+tasks:
+  npm:production:
+    - run: 'cd {{release_path}} && npm ci && npm run build'
+ 
+  opcache:clear:
+    - run: killall php84-cgi || true
+ 
+  deploy:
+    - deploy:prepare
+    - deploy:vendors
+    - npm:production
+    - artisan:storage:link
+    - artisan:optimize:clear
+    # - artisan:migrate        # KOMMENTEERI VÄLJA ESIMESEL DEPLOYMISEL
+    # - artisan:optimize       # KOMMENTEERI VÄLJA ESIMESEL DEPLOYMISEL
+    - deploy:publish
+ 
+after:
+  deploy:success:
+    - opcache:clear
+ 
