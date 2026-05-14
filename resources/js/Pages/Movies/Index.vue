@@ -12,8 +12,9 @@ const activeSource = ref('mine');
 const friendMovies = ref([]);
 const friendLoading = ref(false);
 const friendError = ref(null);
+const selectedRecipe = ref(null);
 
-const FRIEND_API = '';
+const FRIEND_API = 'https://raamistikud.ta24haller.itmajakas.ee/api/recipes';
 
 async function fetchFriendMovies() {
     friendLoading.value = true;
@@ -73,6 +74,14 @@ function getImageSrc(movie) {
     if (movie.image.startsWith('http')) return movie.image;
     return '/storage/' + movie.image;
 }
+
+function openRecipe(item) {
+    selectedRecipe.value = item;
+}
+
+function closeRecipe() {
+    selectedRecipe.value = null;
+}
 </script>
 
 <template>
@@ -104,13 +113,9 @@ function getImageSrc(movie) {
         </nav>
 
         <div class="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between mb-8">
-                
-            </div>
 
             <!-- Source Switcher -->
             <div class="flex items-center gap-4 mb-6">
-                
                 <div style="display:flex; border:1px solid rgba(255,200,90,0.15); border-radius:8px; overflow:hidden;">
                     <button @click="switchSource('mine')"
                         :style="activeSource === 'mine'
@@ -122,10 +127,9 @@ function getImageSrc(movie) {
                         :style="activeSource === 'friend'
                             ? 'background:rgba(255,200,90,0.15); color:#ffc85a; padding:7px 16px; font-size:0.8rem; border:none; border-left:1px solid rgba(255,200,90,0.15); cursor:pointer; letter-spacing:0.04em;'
                             : 'background:transparent; color:#6b6358; padding:7px 16px; font-size:0.8rem; border:none; border-left:1px solid rgba(255,200,90,0.15); cursor:pointer; letter-spacing:0.04em;'">
-                        API andmed
+                        Teine API
                     </button>
                 </div>
-              
             </div>
 
             <!-- Filters -->
@@ -176,10 +180,7 @@ function getImageSrc(movie) {
                 </div>
             </div>
 
-            <!-- Friend banner -->
-            <div v-if="activeSource === 'friend'" style="background:rgba(255,200,90,0.05); border:1px solid rgba(255,200,90,0.12); border-radius:12px; padding:1rem 1.25rem; margin-bottom:2rem;">
-                <p style="font-size:0.82rem; color:#8a8070;">Vaatad <strong style="color:#c8b896;">sõbra API</strong> andmeid. Filtreerimine ja muutmine pole saadaval.</p>
-            </div>
+            
 
             <!-- Loading -->
             <div v-if="activeSource === 'friend' && friendLoading" style="text-align:center; padding:5rem 0; color:#4a4640;">
@@ -198,63 +199,117 @@ function getImageSrc(movie) {
 
             <!-- Grid -->
             <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                <div v-for="movie in displayedMovies" :key="movie.id"
-                    style="background:#16161f; border:1px solid rgba(255,200,90,0.08); border-radius:12px; overflow:hidden; transition:all 0.25s;"
-                    onmouseover="this.style.borderColor='rgba(255,200,90,0.25)'; this.style.transform='translateY(-2px)';"
-                    onmouseout="this.style.borderColor='rgba(255,200,90,0.08)'; this.style.transform='';">
 
-                    <component
-                        :is="activeSource === 'mine' ? Link : 'div'"
-                        v-bind="activeSource === 'mine' ? { href: route('movies.show', movie.id) } : {}">
-                        <img v-if="getImageSrc(movie)" :src="getImageSrc(movie)" :alt="movie.title"
-                            style="width:100%; height:200px; object-fit:cover;" />
-                        <div v-else style="width:100%; height:200px; background:#1e1e2a; display:flex; align-items:center; justify-content:center; color:#3a3a4a;">
-                            <svg xmlns="http://www.w3.org/2000/svg" style="width:48px; height:48px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
-                            </svg>
-                        </div>
-                    </component>
-
-                    <div style="padding:1.1rem;">
-                        <component
-                            :is="activeSource === 'mine' ? Link : 'span'"
-                            v-bind="activeSource === 'mine' ? { href: route('movies.show', movie.id) } : {}">
-                            <h3 style="font-size:1rem; font-weight:600; color:#e2ddd5; text-decoration:none; transition:color 0.2s;"
-                                onmouseover="this.style.color='#ffc85a'" onmouseout="this.style.color='#e2ddd5'">
-                                {{ movie.title }}
-                            </h3>
-                        </component>
-                        <p style="color:#6b6358; font-size:0.8rem; margin-top:4px;">{{ movie.director }} · {{ movie.release_year }}</p>
-                        <div style="display:flex; align-items:center; gap:8px; margin-top:8px; flex-wrap:wrap;">
-                            <span v-if="movie.genre"
-                                style="background:rgba(255,200,90,0.1); color:#a88840; font-size:0.7rem; padding:2px 10px; border-radius:20px; letter-spacing:0.06em;">
-                                {{ movie.genre }}
-                            </span>
-                            <span v-if="movie.rating" style="color:#c8a440; font-size:0.8rem; font-weight:600;">⭐ {{ movie.rating }}/10</span>
-                        </div>
-                        <p style="color:#5a5650; font-size:0.8rem; margin-top:8px; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">{{ movie.description }}</p>
-
-                        <div v-if="activeSource === 'mine' && $page.props.auth.user?.id === movie.user_id"
-                            style="display:flex; gap:12px; margin-top:12px; padding-top:12px; border-top:1px solid rgba(255,200,90,0.08);">
-                            <Link :href="route('movies.edit', movie.id)"
-                                style="color:#8a8070; font-size:0.78rem; text-decoration:none; letter-spacing:0.05em;"
-                                onmouseover="this.style.color='#ffc85a'" onmouseout="this.style.color='#8a8070'">
-                                Muuda
+                <!-- MINU FILMID -->
+                <template v-if="activeSource === 'mine'">
+                    <div v-for="movie in displayedMovies" :key="movie.id"
+                        style="background:#16161f; border:1px solid rgba(255,200,90,0.08); border-radius:12px; overflow:hidden; transition:all 0.25s;"
+                        onmouseover="this.style.borderColor='rgba(255,200,90,0.25)'; this.style.transform='translateY(-2px)';"
+                        onmouseout="this.style.borderColor='rgba(255,200,90,0.08)'; this.style.transform='';">
+                        <Link :href="route('movies.show', movie.id)">
+                            <img v-if="getImageSrc(movie)" :src="getImageSrc(movie)" :alt="movie.title"
+                                style="width:100%; height:200px; object-fit:cover;" />
+                            <div v-else style="width:100%; height:200px; background:#1e1e2a; display:flex; align-items:center; justify-content:center; color:#3a3a4a;">
+                                <svg xmlns="http://www.w3.org/2000/svg" style="width:48px; height:48px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
+                                </svg>
+                            </div>
+                        </Link>
+                        <div style="padding:1.1rem;">
+                            <Link :href="route('movies.show', movie.id)" style="text-decoration:none;">
+                                <h3 style="font-size:1rem; font-weight:600; color:#e2ddd5; transition:color 0.2s;"
+                                    onmouseover="this.style.color='#ffc85a'" onmouseout="this.style.color='#e2ddd5'">
+                                    {{ movie.title }}
+                                </h3>
                             </Link>
-                            <button @click="deleteMovie(movie.id)"
-                                style="color:#8a8070; font-size:0.78rem; background:none; border:none; cursor:pointer; letter-spacing:0.05em; padding:0;"
-                                onmouseover="this.style.color='#c05050'" onmouseout="this.style.color='#8a8070'">
-                                Kustuta
-                            </button>
-                        </div>
-                        <div v-if="activeSource === 'friend'" style="margin-top:12px; padding-top:12px; border-top:1px solid rgba(255,200,90,0.08);">
-                            <span style="font-size:0.7rem; color:#4a4640;"></span>
+                            <p style="color:#6b6358; font-size:0.8rem; margin-top:4px;">{{ movie.director }} · {{ movie.release_year }}</p>
+                            <div style="display:flex; align-items:center; gap:8px; margin-top:8px; flex-wrap:wrap;">
+                                <span v-if="movie.genre"
+                                    style="background:rgba(255,200,90,0.1); color:#a88840; font-size:0.7rem; padding:2px 10px; border-radius:20px; letter-spacing:0.06em;">
+                                    {{ movie.genre }}
+                                </span>
+                                <span v-if="movie.rating" style="color:#c8a440; font-size:0.8rem; font-weight:600;">⭐ {{ movie.rating }}/10</span>
+                            </div>
+                            <p style="color:#5a5650; font-size:0.8rem; margin-top:8px; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">{{ movie.description }}</p>
+                            <div v-if="$page.props.auth.user?.id === movie.user_id"
+                                style="display:flex; gap:12px; margin-top:12px; padding-top:12px; border-top:1px solid rgba(255,200,90,0.08);">
+                                <Link :href="route('movies.edit', movie.id)"
+                                    style="color:#8a8070; font-size:0.78rem; text-decoration:none; letter-spacing:0.05em;"
+                                    onmouseover="this.style.color='#ffc85a'" onmouseout="this.style.color='#8a8070'">
+                                    Muuda
+                                </Link>
+                                <button @click="deleteMovie(movie.id)"
+                                    style="color:#8a8070; font-size:0.78rem; background:none; border:none; cursor:pointer; letter-spacing:0.05em; padding:0;"
+                                    onmouseover="this.style.color='#c05050'" onmouseout="this.style.color='#8a8070'">
+                                    Kustuta
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                </template>
 
-           
+                <!-- SÕBRA RETSEPTID -->
+                <template v-else>
+                    <div v-for="item in displayedMovies" :key="item.id"
+                        @click="openRecipe(item)"
+                        style="background:#16161f; border:1px solid rgba(255,200,90,0.08); border-radius:12px; overflow:hidden; transition:all 0.25s; cursor:pointer;"
+                        onmouseover="this.style.borderColor='rgba(255,200,90,0.25)'; this.style.transform='translateY(-2px)';"
+                        onmouseout="this.style.borderColor='rgba(255,200,90,0.08)'; this.style.transform='';">
+                        <img v-if="item.image" :src="item.image" :alt="item.title"
+                            style="width:100%; height:200px; object-fit:cover;" />
+                        <div v-else style="width:100%; height:200px; background:#1e1e2a; display:flex; align-items:center; justify-content:center; font-size:3rem;">
+                            🍽️
+                        </div>
+                        <div style="padding:1.1rem;">
+                            <h3 style="font-size:1rem; font-weight:600; color:#e2ddd5;">{{ item.title }}</h3>
+                            <div style="display:flex; align-items:center; gap:8px; margin-top:6px; flex-wrap:wrap;">
+                                <span v-if="item.difficulty"
+                                    style="background:rgba(255,200,90,0.1); color:#a88840; font-size:0.7rem; padding:2px 10px; border-radius:20px; letter-spacing:0.06em; text-transform:capitalize;">
+                                    {{ item.difficulty }}
+                                </span>
+                                <span v-if="item.cooking_time" style="color:#8a8070; font-size:0.78rem;">⏱ {{ item.cooking_time }} min</span>
+                                <span v-if="item.calories" style="color:#8a8070; font-size:0.78rem;">🔥 {{ item.calories }} kcal</span>
+                            </div>
+                            <p style="color:#5a5650; font-size:0.8rem; margin-top:8px; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">{{ item.description }}</p>
+                            <div style="margin-top:12px; padding-top:12px; border-top:1px solid rgba(255,200,90,0.08);">
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+            </div>
         </div>
     </div>
+
+    <!-- Retsepti modaal -->
+    <div v-if="selectedRecipe"
+        style="position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:100; display:flex; align-items:center; justify-content:center; padding:1rem;"
+        @click.self="closeRecipe">
+        <div style="background:#16161f; border:1px solid rgba(255,200,90,0.15); border-radius:16px; max-width:600px; width:100%; max-height:90vh; overflow-y:auto;">
+            <img v-if="selectedRecipe.image" :src="selectedRecipe.image" :alt="selectedRecipe.title"
+                style="width:100%; height:240px; object-fit:cover; border-radius:16px 16px 0 0;" />
+            <div style="padding:1.75rem;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:1rem;">
+                    <h2 style="font-family:'Georgia',serif; font-size:1.4rem; color:#e2ddd5;">{{ selectedRecipe.title }}</h2>
+                    <button @click="closeRecipe"
+                        style="color:#6b6358; background:none; border:none; font-size:1.4rem; cursor:pointer; padding:0 0 0 1rem; line-height:1;"
+                        onmouseover="this.style.color='#e2ddd5'" onmouseout="this.style.color='#6b6358'">✕</button>
+                </div>
+                <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:1.25rem;">
+                    <span v-if="selectedRecipe.difficulty"
+                        style="background:rgba(255,200,90,0.1); color:#a88840; font-size:0.75rem; padding:3px 12px; border-radius:20px; text-transform:capitalize;">
+                        {{ selectedRecipe.difficulty }}
+                    </span>
+                    <span v-if="selectedRecipe.cooking_time" style="color:#8a8070; font-size:0.82rem;">⏱ {{ selectedRecipe.cooking_time }} min</span>
+                    <span v-if="selectedRecipe.calories" style="color:#8a8070; font-size:0.82rem;">🔥 {{ selectedRecipe.calories }} kcal</span>
+                </div>
+                <p style="color:#a8a098; font-size:0.88rem; line-height:1.7; margin-bottom:1.25rem;">{{ selectedRecipe.description }}</p>
+                <div v-if="selectedRecipe.instructions">
+                    <h3 style="font-size:0.8rem; color:#6b6358; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:0.75rem;">Juhised</h3>
+                    <p style="color:#a8a098; font-size:0.88rem; line-height:1.8; white-space:pre-line;">{{ selectedRecipe.instructions }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </template>
